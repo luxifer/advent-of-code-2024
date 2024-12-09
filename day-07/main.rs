@@ -1,17 +1,14 @@
+use advent_of_code::utils;
+use itertools::{repeat_n, Itertools};
 use std::fmt;
 use std::fmt::Write;
-use std::fs::File;
-use std::io::{self, BufRead};
-use std::path::Path;
-
-use itertools::{repeat_n, Itertools};
 
 fn main() {
     let input = std::env::args().nth(1).expect("missing input");
 
     let mut equations: Vec<Equation> = Vec::new();
 
-    if let Ok(lines) = read_lines(input) {
+    if let Ok(lines) = utils::read_lines(input) {
         for line in lines.flatten() {
             let parts: Vec<&str> = line.split(": ").collect();
             let test_value = parts[0].parse::<u64>().unwrap();
@@ -108,14 +105,6 @@ fn compute_combination(expected: u64, inputs: Vec<u64>, operators: Vec<Operator>
     }
 
     return false;
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
 
 #[derive(Clone, PartialEq, Debug)]

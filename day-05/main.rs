@@ -1,6 +1,4 @@
-use std::fs::File;
-use std::io::{self, BufRead};
-use std::path::Path;
+use advent_of_code::utils;
 
 fn main() {
     let input = std::env::args().nth(1).expect("missing input");
@@ -8,7 +6,7 @@ fn main() {
     let mut ordering: Vec<[i32; 2]> = Vec::new();
     let mut updates: Vec<Vec<i32>> = Vec::new();
 
-    if let Ok(lines) = read_lines(input) {
+    if let Ok(lines) = utils::read_lines(input) {
         for line in lines.flatten() {
             if line.contains("|") {
                 let order: Vec<i32> = line.split("|").map(|p| p.parse::<i32>().unwrap()).collect();
@@ -55,12 +53,4 @@ fn main() {
 
     println!("answer: {}", total_correct);
     println!("answer: {}", total_incorrect);
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
 }
