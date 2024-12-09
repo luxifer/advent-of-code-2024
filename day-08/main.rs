@@ -1,6 +1,5 @@
 use advent_of_code::matrix::coord;
 use advent_of_code::matrix::matrix;
-use advent_of_code::matrix::vector;
 use advent_of_code::utils;
 use std::collections::HashMap;
 
@@ -44,14 +43,12 @@ fn main() {
     let mut antinode_map = antena_map.clone();
     antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
 
-    println!("{}", antinode_map);
     println!("answer: {}", antinodes.len());
 
     let antinodes = search_antinodes_harmonics(&antenas, &antena_map);
     let mut antinode_map = antena_map.clone();
     antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
 
-    println!("{}", antinode_map);
     println!("answer: {}", antinodes.len());
 }
 
@@ -64,7 +61,7 @@ fn search_antinodes_harmonics(
     for (_, coords) in antenas.iter() {
         for antena in coords.iter() {
             for other_antena in coords.iter() {
-                let distance = dist(antena, other_antena);
+                let distance = antena.distance(*other_antena);
 
                 // same antena
                 if distance.is_zero() {
@@ -103,7 +100,7 @@ fn search_antinodes(
     for (_, coords) in antenas.iter() {
         for antena in coords.iter() {
             for other_antena in coords.iter() {
-                let distance = dist(antena, other_antena);
+                let distance = antena.distance(*other_antena);
 
                 // same antena
                 if distance.is_zero() {
@@ -127,11 +124,4 @@ fn search_antinodes(
     }
 
     return antinodes;
-}
-
-fn dist(a: &coord::Coord, b: &coord::Coord) -> vector::Vector {
-    return vector::Vector {
-        x: b.x - a.x,
-        y: b.y - a.y,
-    };
 }

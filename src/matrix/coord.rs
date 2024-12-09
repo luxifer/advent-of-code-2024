@@ -23,6 +23,13 @@ impl Coord {
         self.x += v.x;
         self.y += v.y;
     }
+
+    pub fn distance(&self, other: Coord) -> Vector {
+        return Vector {
+            x: other.x - self.x,
+            y: other.y - self.y,
+        };
+    }
 }
 
 impl fmt::Display for Coord {
