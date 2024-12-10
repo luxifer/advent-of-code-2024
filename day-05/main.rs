@@ -1,22 +1,22 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut ordering: Vec<[i32; 2]> = Vec::new();
     let mut updates: Vec<Vec<i32>> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            if line.contains("|") {
-                let order: Vec<i32> = line.split("|").map(|p| p.parse::<i32>().unwrap()).collect();
-                ordering.push([order[0], order[1]]);
-            }
+    for line in lines.lines() {
+        if line.contains("|") {
+            let order: Vec<i32> = line.split("|").map(|p| p.parse::<i32>().unwrap()).collect();
+            ordering.push([order[0], order[1]]);
+        }
 
-            if line.contains(",") {
-                let update: Vec<i32> = line.split(",").map(|p| p.parse::<i32>().unwrap()).collect();
-                updates.push(update);
-            }
+        if line.contains(",") {
+            let update: Vec<i32> = line.split(",").map(|p| p.parse::<i32>().unwrap()).collect();
+            updates.push(update);
         }
     }
 
@@ -53,4 +53,5 @@ fn main() {
 
     println!("answer: {}", total_correct);
     println!("answer: {}", total_incorrect);
+    Ok(())
 }

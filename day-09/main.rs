@@ -1,15 +1,15 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut disk_map: Vec<u32> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            for c in line.chars() {
-                disk_map.push(c.to_digit(10).unwrap());
-            }
+    for line in lines.lines() {
+        for c in line.chars() {
+            disk_map.push(c.to_digit(10).unwrap());
         }
     }
 
@@ -20,6 +20,7 @@ fn main() {
     let checksum = compact_disk(&disk_map);
 
     println!("answer: {}", checksum);
+    Ok(())
 }
 
 fn compact_disk(disk_map: &Vec<u32>) -> i64 {

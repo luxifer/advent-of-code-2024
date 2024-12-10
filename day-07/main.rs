@@ -1,24 +1,24 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 use itertools::{repeat_n, Itertools};
 use std::fmt;
 use std::fmt::Write;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut equations: Vec<Equation> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            let parts: Vec<&str> = line.split(": ").collect();
-            let test_value = parts[0].parse::<u64>().unwrap();
-            let numbers: Vec<u64> = parts[1]
-                .split(" ")
-                .map(|p| p.parse::<u64>().unwrap())
-                .collect();
+    for line in lines.lines() {
+        let parts: Vec<&str> = line.split(": ").collect();
+        let test_value = parts[0].parse::<u64>().unwrap();
+        let numbers: Vec<u64> = parts[1]
+            .split(" ")
+            .map(|p| p.parse::<u64>().unwrap())
+            .collect();
 
-            equations.push(Equation::from(test_value, numbers));
-        }
+        equations.push(Equation::from(test_value, numbers));
     }
 
     let mut total = 0;
@@ -51,6 +51,7 @@ fn main() {
     }
 
     println!("answer: {}", total);
+    Ok(())
 }
 
 struct Equation {

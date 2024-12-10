@@ -1,15 +1,15 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 use regex::Regex;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut programs: Vec<String> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            programs.push(line.clone());
-        }
+    for line in lines.lines() {
+        programs.push(line.to_string());
     }
 
     let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
@@ -29,7 +29,9 @@ fn main() {
 
     for program in programs.iter() {
         for m in re.captures_iter(program) {
-            let Some(ins) = m.get(0) else { return };
+            let Some(ins) = m.get(0) else {
+                continue;
+            };
             if ins.as_str() == "don't()" {
                 enabled = false;
                 println!("disabled");
@@ -54,4 +56,5 @@ fn main() {
     }
 
     println!("answer: {}", res);
+    Ok(())
 }

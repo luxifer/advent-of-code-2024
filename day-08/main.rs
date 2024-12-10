@@ -1,28 +1,28 @@
+use advent_of_code::cli;
 use advent_of_code::matrix::coord;
 use advent_of_code::matrix::matrix;
-use advent_of_code::utils;
+use anyhow::Result;
 use std::collections::HashMap;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut antena_map: matrix::Matrix<char> = matrix::Matrix::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        let mut cols = -1;
-        let mut rows = 0;
-        for line in lines.flatten() {
-            if cols == -1 {
-                cols = line.len() as i32;
-            }
-            for char in line.chars() {
-                antena_map.data.push(char);
-            }
-            rows += 1;
+    let mut cols = -1;
+    let mut rows = 0;
+    for line in lines.lines() {
+        if cols == -1 {
+            cols = line.len() as i32;
         }
-        antena_map.width = cols;
-        antena_map.height = rows;
+        for char in line.chars() {
+            antena_map.data.push(char);
+        }
+        rows += 1;
     }
+    antena_map.width = cols;
+    antena_map.height = rows;
 
     let mut antenas: HashMap<char, Vec<coord::Coord>> = HashMap::new();
 
@@ -50,6 +50,7 @@ fn main() {
     antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
 
     println!("answer: {}", antinodes.len());
+    Ok(())
 }
 
 fn search_antinodes_harmonics(

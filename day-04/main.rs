@@ -1,29 +1,29 @@
+use advent_of_code::cli;
 use advent_of_code::matrix::coord;
 use advent_of_code::matrix::matrix;
 use advent_of_code::matrix::vector;
-use advent_of_code::utils;
+use anyhow::Result;
 use std::collections::HashMap;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut word_search: matrix::Matrix<char> = matrix::Matrix::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        let mut cols = -1;
-        let mut rows = 0;
-        for line in lines.flatten() {
-            if cols == -1 {
-                cols = line.len() as i32;
-            }
-            for char in line.chars() {
-                word_search.data.push(char);
-            }
-            rows += 1;
+    let mut cols = -1;
+    let mut rows = 0;
+    for line in lines.lines() {
+        if cols == -1 {
+            cols = line.len() as i32;
         }
-        word_search.width = cols;
-        word_search.height = rows;
+        for char in line.chars() {
+            word_search.data.push(char);
+        }
+        rows += 1;
     }
+    word_search.width = cols;
+    word_search.height = rows;
 
     let mut total = 0;
 
@@ -66,6 +66,7 @@ fn main() {
     }
 
     println!("answer: {}", total);
+    Ok(())
 }
 
 fn search_xmas(m: &matrix::Matrix<char>, orig: coord::Coord, dir: vector::Vector) -> bool {

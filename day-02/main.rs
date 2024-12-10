@@ -1,16 +1,16 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut reports: Vec<Vec<i32>> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            let parts: Vec<&str> = line.split(" ").collect();
-            let levels: Vec<i32> = parts.iter().map(|p| p.parse::<i32>().unwrap()).collect();
-            reports.push(levels);
-        }
+    for line in lines.lines() {
+        let parts: Vec<&str> = line.split(" ").collect();
+        let levels: Vec<i32> = parts.iter().map(|p| p.parse::<i32>().unwrap()).collect();
+        reports.push(levels);
     }
 
     let mut safe: i32 = 0;
@@ -44,6 +44,7 @@ fn main() {
     }
 
     println!("answer: {}", safe);
+    Ok(())
 }
 
 fn is_safe(levels: Vec<i32>) -> bool {
