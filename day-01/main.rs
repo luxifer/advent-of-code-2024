@@ -1,18 +1,18 @@
-use advent_of_code::utils;
+use advent_of_code::cli;
+use anyhow::Result;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut col1: Vec<i32> = Vec::new();
     let mut col2: Vec<i32> = Vec::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        for line in lines.flatten() {
-            let parts: Vec<&str> = line.split("   ").collect();
+    for line in lines.lines() {
+        let parts: Vec<&str> = line.split("   ").collect();
 
-            col1.push(parts[0].parse::<i32>().unwrap());
-            col2.push(parts[1].parse::<i32>().unwrap());
-        }
+        col1.push(parts[0].parse::<i32>().unwrap());
+        col2.push(parts[1].parse::<i32>().unwrap());
     }
 
     col1.sort();
@@ -34,4 +34,5 @@ fn main() {
     }
 
     println!("answer: {}", sim);
+    Ok(())
 }

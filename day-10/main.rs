@@ -1,33 +1,33 @@
+use advent_of_code::cli;
 use advent_of_code::matrix::coord;
 use advent_of_code::matrix::matrix;
 use advent_of_code::matrix::vector;
-use advent_of_code::utils;
+use anyhow::Result;
 use std::collections::HashSet;
 
-fn main() {
-    let input = std::env::args().nth(1).expect("missing input");
+fn main() -> Result<()> {
+    let app = cli::Cli::new();
 
     let mut topographic_map: matrix::Matrix<i32> = matrix::Matrix::new();
+    let lines = app.content()?;
 
-    if let Ok(lines) = utils::read_lines(input) {
-        let mut cols = -1;
-        let mut rows = 0;
-        for line in lines.flatten() {
-            if cols == -1 {
-                cols = line.len() as i32;
-            }
-            for char in line.chars() {
-                if char == '.' {
-                    topographic_map.data.push(-1);
-                } else {
-                    topographic_map.data.push(char.to_digit(10).unwrap() as i32);
-                }
-            }
-            rows += 1;
+    let mut cols = -1;
+    let mut rows = 0;
+    for line in lines.lines() {
+        if cols == -1 {
+            cols = line.len() as i32;
         }
-        topographic_map.width = cols;
-        topographic_map.height = rows;
+        for char in line.chars() {
+            if char == '.' {
+                topographic_map.data.push(-1);
+            } else {
+                topographic_map.data.push(char.to_digit(10).unwrap() as i32);
+            }
+        }
+        rows += 1;
     }
+    topographic_map.width = cols;
+    topographic_map.height = rows;
 
     let mut total = 0;
 
@@ -57,6 +57,7 @@ fn main() {
     }
 
     println!("part 2: {}", total);
+    Ok(())
 }
 
 fn count_distinct_trailheads(

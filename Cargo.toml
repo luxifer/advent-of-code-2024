@@ -44,5 +44,7 @@ name = "day-10"
 path = "day-10/main.rs"
 
 [dependencies]
+anyhow = "1.0.94"
+clap = { version = "4.5.23", features = ["derive"] }
 itertools = "0.13.0"
 regex = "1.11.1"
