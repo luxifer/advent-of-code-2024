@@ -21,36 +21,42 @@ fn main() -> Result<()> {
         equations.push(Equation::from(test_value, numbers));
     }
 
-    let mut total = 0;
+    cli::stage(1, || -> i64 {
+        let mut total = 0;
 
-    for equation in equations.iter() {
-        if compute_combination(
-            equation.test_value,
-            equation.numbers.clone(),
-            vec![Operator::Addition, Operator::Multiplication],
-        ) {
-            total += equation.test_value;
+        for equation in equations.iter() {
+            if compute_combination(
+                equation.test_value,
+                equation.numbers.clone(),
+                vec![Operator::Addition, Operator::Multiplication],
+            ) {
+                total += equation.test_value as i64;
+            }
         }
-    }
 
-    println!("answer: {}", total);
-    total = 0;
+        return total;
+    });
 
-    for equation in equations.iter() {
-        if compute_combination(
-            equation.test_value,
-            equation.numbers.clone(),
-            vec![
-                Operator::Addition,
-                Operator::Multiplication,
-                Operator::Concatenation,
-            ],
-        ) {
-            total += equation.test_value;
+    cli::stage(2, || -> i64 {
+        let mut total = 0;
+
+        for equation in equations.iter() {
+            if compute_combination(
+                equation.test_value,
+                equation.numbers.clone(),
+                vec![
+                    Operator::Addition,
+                    Operator::Multiplication,
+                    Operator::Concatenation,
+                ],
+            ) {
+                total += equation.test_value as i64;
+            }
         }
-    }
 
-    println!("answer: {}", total);
+        return total;
+    });
+
     Ok(())
 }
 

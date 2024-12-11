@@ -32,29 +32,34 @@ fn main() -> Result<()> {
     // pointing up
     let dir = vector::Vector { x: 0, y: -1 };
 
-    let visited = move_guard(&search_map, guard, dir);
-    let steps = visited.data.iter().filter(|&p| *p == 'X').count();
+    cli::stage(1, || -> i64 {
+        let visited = move_guard(&search_map, guard, dir);
+        let steps = visited.data.iter().filter(|&p| *p == 'X').count();
 
-    println!("answer: {}", steps);
+        return steps as i64;
+    });
 
-    let mut loops = 0;
+    cli::stage(2, || -> i64 {
+        let mut loops = 0;
 
-    for c in search_map.iter() {
-        let tile = search_map.at_coord(c).unwrap();
+        for c in search_map.iter() {
+            let tile = search_map.at_coord(c).unwrap();
 
-        if *tile == '#' {
-            // already blocked
-            continue;
+            if *tile == '#' {
+                // already blocked
+                continue;
+            }
+
+            let mut find_loop = search_map.clone();
+            find_loop.set(c, 'O');
+            if detect_loop(find_loop, guard, dir) {
+                loops += 1;
+            }
         }
 
-        let mut find_loop = search_map.clone();
-        find_loop.set(c, 'O');
-        if detect_loop(find_loop, guard, dir) {
-            loops += 1;
-        }
-    }
+        return loops;
+    });
 
-    println!("answer: {}", loops);
     Ok(())
 }
 

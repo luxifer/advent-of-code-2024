@@ -39,17 +39,21 @@ fn main() -> Result<()> {
             .or_insert(vec![c]);
     }
 
-    let antinodes = search_antinodes(&antenas, &antena_map);
-    let mut antinode_map = antena_map.clone();
-    antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
+    cli::stage(1, || -> i64 {
+        let antinodes = search_antinodes(&antenas, &antena_map);
+        let mut antinode_map = antena_map.clone();
+        antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
 
-    println!("answer: {}", antinodes.len());
+        return antinodes.len() as i64;
+    });
 
-    let antinodes = search_antinodes_harmonics(&antenas, &antena_map);
-    let mut antinode_map = antena_map.clone();
-    antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
+    cli::stage(2, || -> i64 {
+        let antinodes = search_antinodes_harmonics(&antenas, &antena_map);
+        let mut antinode_map = antena_map.clone();
+        antinodes.iter().for_each(|p| antinode_map.set(*p, '#'));
+        return antinodes.len() as i64;
+    });
 
-    println!("answer: {}", antinodes.len());
     Ok(())
 }
 

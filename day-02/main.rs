@@ -13,37 +13,42 @@ fn main() -> Result<()> {
         reports.push(levels);
     }
 
-    let mut safe: i32 = 0;
+    cli::stage(1, || -> i64 {
+        let mut safe: i64 = 0;
 
-    for levels in reports.iter() {
-        if is_safe(levels.clone()) {
-            safe += 1;
-        }
-    }
-
-    println!("answer: {}", safe);
-
-    let mut safe: i32 = 0;
-
-    for levels in reports.iter() {
-        let mut any_safe = false;
-
-        for i in 0..levels.len() {
-            let mut fixed: Vec<i32> = levels.to_vec();
-            fixed.remove(i);
-
-            if is_safe(fixed) {
-                any_safe = true;
-                break;
+        for levels in reports.iter() {
+            if is_safe(levels.clone()) {
+                safe += 1;
             }
         }
 
-        if any_safe {
-            safe += 1;
-        }
-    }
+        return safe;
+    });
 
-    println!("answer: {}", safe);
+    cli::stage(2, || -> i64 {
+        let mut safe: i64 = 0;
+
+        for levels in reports.iter() {
+            let mut any_safe = false;
+
+            for i in 0..levels.len() {
+                let mut fixed: Vec<i32> = levels.to_vec();
+                fixed.remove(i);
+
+                if is_safe(fixed) {
+                    any_safe = true;
+                    break;
+                }
+            }
+
+            if any_safe {
+                safe += 1;
+            }
+        }
+
+        return safe;
+    });
+
     Ok(())
 }
 

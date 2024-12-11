@@ -4,24 +4,35 @@ use anyhow::Result;
 fn main() -> Result<()> {
     let app = cli::Cli::new();
 
-    let mut ordering: Vec<[i32; 2]> = Vec::new();
-    let mut updates: Vec<Vec<i32>> = Vec::new();
+    let mut ordering: Vec<[i64; 2]> = Vec::new();
+    let mut updates: Vec<Vec<i64>> = Vec::new();
     let lines = app.content()?;
 
     for line in lines.lines() {
         if line.contains("|") {
-            let order: Vec<i32> = line.split("|").map(|p| p.parse::<i32>().unwrap()).collect();
+            let order: Vec<i64> = line.split("|").map(|p| p.parse::<i64>().unwrap()).collect();
             ordering.push([order[0], order[1]]);
         }
 
         if line.contains(",") {
-            let update: Vec<i32> = line.split(",").map(|p| p.parse::<i32>().unwrap()).collect();
+            let update: Vec<i64> = line.split(",").map(|p| p.parse::<i64>().unwrap()).collect();
             updates.push(update);
         }
     }
 
-    let mut total_correct = 0;
-    let mut total_incorrect = 0;
+    cli::stage(1, || -> i64 {
+        return find_ordered(&ordering, updates.clone(), true);
+    });
+
+    cli::stage(2, || -> i64 {
+        return find_ordered(&ordering, updates.clone(), false);
+    });
+
+    Ok(())
+}
+
+fn find_ordered(ordering: &Vec<[i64; 2]>, mut updates: Vec<Vec<i64>>, want: bool) -> i64 {
+    let mut total = 0;
 
     for update in updates.iter_mut() {
         let mut valid = true;
@@ -44,14 +55,14 @@ fn main() -> Result<()> {
             }
         }
 
-        if valid {
-            total_correct += update.get(update.len() / 2).unwrap();
-        } else {
-            total_incorrect += update.get(update.len() / 2).unwrap();
+        if valid && want {
+            total += update.get(update.len() / 2).unwrap();
+        }
+
+        if !valid && !want {
+            total += update.get(update.len() / 2).unwrap();
         }
     }
 
-    println!("answer: {}", total_correct);
-    println!("answer: {}", total_incorrect);
-    Ok(())
+    return total;
 }

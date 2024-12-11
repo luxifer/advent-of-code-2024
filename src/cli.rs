@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use clap::Parser;
+use std::time::Instant;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -17,4 +18,15 @@ impl Cli {
             .with_context(|| format!("can't read file {}", self.input.display()))?;
         Ok(content)
     }
+}
+
+pub fn stage<F: Fn() -> i64>(stage: i32, f: F) {
+    let now = Instant::now();
+    let answer = f();
+    println!(
+        "stage {}: {}\nin {}ms",
+        stage,
+        answer,
+        now.elapsed().as_millis()
+    );
 }

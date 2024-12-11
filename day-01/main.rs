@@ -18,21 +18,26 @@ fn main() -> Result<()> {
     col1.sort();
     col2.sort();
 
-    let mut dist: u32 = 0;
+    cli::stage(1, || -> i64 {
+        let mut dist: i64 = 0;
 
-    for i in 0..col1.len() {
-        dist += col1[i].abs_diff(col2[i]);
-    }
+        for i in 0..col1.len() {
+            dist += col1[i].abs_diff(col2[i]) as i64;
+        }
 
-    println!("answer: {}", dist);
+        return dist;
+    });
 
-    let mut sim: i32 = 0;
+    cli::stage(2, || -> i64 {
+        let mut sim: i64 = 0;
 
-    for left in col1.iter() {
-        let found = col2.iter().filter(|val| val == &left).count() as i32;
-        sim += left * found;
-    }
+        for left in col1.iter() {
+            let found = col2.iter().filter(|val| val == &left).count() as i32;
+            sim += (left * found) as i64;
+        }
 
-    println!("answer: {}", sim);
+        return sim;
+    });
+
     Ok(())
 }

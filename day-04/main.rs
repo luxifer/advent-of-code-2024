@@ -25,47 +25,52 @@ fn main() -> Result<()> {
     word_search.width = cols;
     word_search.height = rows;
 
-    let mut total = 0;
+    cli::stage(1, || -> i64 {
+        let mut total = 0;
 
-    for c in word_search.iter() {
-        // println!("{}", c);
+        for c in word_search.iter() {
+            // println!("{}", c);
 
-        let val = word_search.at_coord(c).unwrap();
+            let val = word_search.at_coord(c).unwrap();
 
-        if *val != 'X' {
-            continue;
+            if *val != 'X' {
+                continue;
+            }
+
+            let directions = [
+                UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT,
+            ];
+
+            for d in directions {
+                if search_xmas(&word_search, c, d) {
+                    total += 1;
+                }
+            }
         }
 
-        let directions = [
-            UP, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT,
-        ];
+        return total;
+    });
 
-        for d in directions {
-            if search_xmas(&word_search, c, d) {
+    cli::stage(2, || -> i64 {
+        let mut total = 0;
+
+        for c in word_search.iter() {
+            // println!("{}", c);
+
+            let val = word_search.at_coord(c).unwrap();
+
+            if *val != 'A' {
+                continue;
+            }
+
+            if search_cross_mas(&word_search, c) {
                 total += 1;
             }
         }
-    }
 
-    println!("answer: {}", total);
+        return total;
+    });
 
-    let mut total = 0;
-
-    for c in word_search.iter() {
-        // println!("{}", c);
-
-        let val = word_search.at_coord(c).unwrap();
-
-        if *val != 'A' {
-            continue;
-        }
-
-        if search_cross_mas(&word_search, c) {
-            total += 1;
-        }
-    }
-
-    println!("answer: {}", total);
     Ok(())
 }
 

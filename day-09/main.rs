@@ -13,13 +13,14 @@ fn main() -> Result<()> {
         }
     }
 
-    let checksum = defrag_disk(&disk_map);
+    cli::stage(1, || -> i64 {
+        return defrag_disk(&disk_map);
+    });
 
-    println!("answer: {}", checksum);
+    cli::stage(2, || -> i64 {
+        return compact_disk(&disk_map);
+    });
 
-    let checksum = compact_disk(&disk_map);
-
-    println!("answer: {}", checksum);
     Ok(())
 }
 

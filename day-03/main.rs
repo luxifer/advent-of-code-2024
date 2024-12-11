@@ -12,49 +12,54 @@ fn main() -> Result<()> {
         programs.push(line.to_string());
     }
 
-    let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
-    let mut res = 0;
+    cli::stage(1, || -> i64 {
+        let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
+        let mut res: i64 = 0;
 
-    for program in programs.iter() {
-        for (_, [left, right]) in re.captures_iter(program).map(|c| c.extract()) {
-            res += left.parse::<i32>().unwrap() * right.parse::<i32>().unwrap();
-        }
-    }
-
-    println!("answer: {}", res);
-
-    let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)").unwrap();
-    let mut enabled = true;
-    let mut res = 0;
-
-    for program in programs.iter() {
-        for m in re.captures_iter(program) {
-            let Some(ins) = m.get(0) else {
-                continue;
-            };
-            if ins.as_str() == "don't()" {
-                enabled = false;
-                println!("disabled");
-            }
-
-            if ins.as_str() == "do()" {
-                enabled = true;
-                println!("enabled");
-            }
-
-            if enabled {
-                let Some(left) = m.get(1) else {
-                    continue;
-                };
-                let Some(right) = m.get(2) else {
-                    continue;
-                };
-                res +=
-                    left.as_str().parse::<i32>().unwrap() * right.as_str().parse::<i32>().unwrap();
+        for program in programs.iter() {
+            for (_, [left, right]) in re.captures_iter(program).map(|c| c.extract()) {
+                res += left.parse::<i64>().unwrap() * right.parse::<i64>().unwrap();
             }
         }
-    }
 
-    println!("answer: {}", res);
+        return res;
+    });
+
+    cli::stage(2, || -> i64 {
+        let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)").unwrap();
+        let mut enabled = true;
+        let mut res: i64 = 0;
+
+        for program in programs.iter() {
+            for m in re.captures_iter(program) {
+                let Some(ins) = m.get(0) else {
+                    continue;
+                };
+                if ins.as_str() == "don't()" {
+                    enabled = false;
+                    // println!("disabled");
+                }
+
+                if ins.as_str() == "do()" {
+                    enabled = true;
+                    // println!("enabled");
+                }
+
+                if enabled {
+                    let Some(left) = m.get(1) else {
+                        continue;
+                    };
+                    let Some(right) = m.get(2) else {
+                        continue;
+                    };
+                    res += left.as_str().parse::<i64>().unwrap()
+                        * right.as_str().parse::<i64>().unwrap();
+                }
+            }
+        }
+
+        return res;
+    });
+
     Ok(())
 }

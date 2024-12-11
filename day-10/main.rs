@@ -29,34 +29,39 @@ fn main() -> Result<()> {
     topographic_map.width = cols;
     topographic_map.height = rows;
 
-    let mut total = 0;
+    cli::stage(1, || -> i64 {
+        let mut total = 0;
 
-    for c in topographic_map.iter() {
-        let height = topographic_map.at_coord(c).unwrap();
+        for c in topographic_map.iter() {
+            let height = topographic_map.at_coord(c).unwrap();
 
-        if *height != 0 {
-            continue;
+            if *height != 0 {
+                continue;
+            }
+
+            let visited = count_destination(&topographic_map, c, 0).unwrap();
+            total += visited.len() as i64;
         }
 
-        let visited = count_destination(&topographic_map, c, 0).unwrap();
-        total += visited.len();
-    }
+        return total;
+    });
 
-    println!("part 1: {}", total);
+    cli::stage(2, || -> i64 {
+        let mut total = 0;
 
-    let mut total = 0;
+        for c in topographic_map.iter() {
+            let height = topographic_map.at_coord(c).unwrap();
 
-    for c in topographic_map.iter() {
-        let height = topographic_map.at_coord(c).unwrap();
+            if *height != 0 {
+                continue;
+            }
 
-        if *height != 0 {
-            continue;
+            total += count_distinct_trailheads(&topographic_map, c, 0);
         }
 
-        total += count_distinct_trailheads(&topographic_map, c, 0);
-    }
+        return total as i64;
+    });
 
-    println!("part 2: {}", total);
     Ok(())
 }
 
