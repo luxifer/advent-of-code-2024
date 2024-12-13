@@ -73,7 +73,7 @@ fn visit(
 ) -> (i64, i64) {
     visited.set(pos, true);
 
-    println!("{}-> {}", label, pos);
+    // println!("{}-> {}", label, pos);
 
     let dir = [UP, RIGHT, DOWN, LEFT];
     let mut area = 1;
@@ -103,8 +103,30 @@ fn visit(
     return (area, perimeter);
 }
 
-fn find_corners(region: &matrix::Matrix<char>, pos: coord::Coord) -> i64 {
-    return 0;
+fn compare(region: &matrix::Matrix<char>, a: coord::Coord, b: coord::Coord) -> bool {
+    return region.in_coord(a)
+        && region.in_coord(b)
+        && region.at_coord(a).unwrap() == region.at_coord(b).unwrap();
+}
+
+fn count_corners(region: &matrix::Matrix<char>, pos: coord::Coord) -> i64 {
+    let mut corners = 0;
+    let dir = [UP, RIGHT, DOWN, LEFT];
+
+    for d in dir {
+        if !compare(region, pos, pos.add(d)) && !compare(region, pos, pos.add(d.rotate_90_cw())) {
+            corners += 1;
+        }
+
+        if compare(region, pos, pos.add(d))
+            && compare(region, pos, pos.add(d.rotate_90_cw()))
+            && !compare(region, pos, pos.add(d).add(d.rotate_90_cw()))
+        {
+            corners += 1;
+        }
+    }
+
+    return corners;
 }
 
 fn visit_corners(
@@ -115,17 +137,16 @@ fn visit_corners(
 ) -> (i64, i64) {
     visited.set(pos, true);
 
-    println!("{}-> {}", label, pos);
+    // println!("{}-> {}", label, pos);
 
     let dir = [UP, RIGHT, DOWN, LEFT];
     let mut area = 1;
-    let mut sides = find_corners(region, pos);
+    let mut sides = count_corners(region, pos);
 
     for d in dir {
         let next_pos = pos.add(d);
-        let next_label = region.at_coord(next_pos).unwrap();
 
-        if *next_label == label && !visited.at_coord(next_pos).unwrap() {
+        if compare(region, pos, next_pos) && !visited.at_coord(next_pos).unwrap() {
             let (a, s) = visit_corners(region, next_pos, label, visited);
             area += a;
             sides += s;
