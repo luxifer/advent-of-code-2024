@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
 use advent_of_code::cli;
 use anyhow::Result;
+use std::collections::HashMap;
 
 fn main() -> Result<()> {
     let app = cli::Cli::new();

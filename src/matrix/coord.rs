@@ -1,7 +1,7 @@
 use super::vector::Vector;
 use std::fmt;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub struct Coord {
     pub x: i32,
     pub y: i32,

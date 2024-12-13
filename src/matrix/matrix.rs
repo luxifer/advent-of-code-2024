@@ -8,12 +8,20 @@ pub struct Matrix<T> {
     pub height: i32,
 }
 
-impl<T: std::clone::Clone + std::cmp::PartialEq> Matrix<T> {
+impl<T: std::clone::Clone + std::cmp::PartialEq + std::marker::Copy> Matrix<T> {
     pub fn new() -> Matrix<T> {
         return Matrix {
             data: Vec::new(),
             width: 0,
             height: 0,
+        };
+    }
+
+    pub fn from_size(width: i32, height: i32, val: T) -> Self {
+        return Matrix {
+            width,
+            height,
+            data: vec![val].repeat((width * height) as usize),
         };
     }
 
