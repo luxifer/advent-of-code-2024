@@ -1,12 +1,16 @@
 use std::fmt;
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Vector {
     pub x: i32,
     pub y: i32,
 }
 
 impl Vector {
+    pub fn new(x: i32, y: i32) -> Self {
+        Self { x, y }
+    }
+
     pub const fn add(&self, v: Vector) -> Vector {
         return Vector {
             x: self.x + v.x,

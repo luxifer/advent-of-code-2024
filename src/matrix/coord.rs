@@ -8,8 +8,8 @@ pub struct Coord {
 }
 
 impl Coord {
-    pub fn new() -> Coord {
-        return Coord { x: 0, y: 0 };
+    pub fn new(x: i32, y: i32) -> Self {
+        Self { x, y }
     }
 
     pub fn add(&self, v: Vector) -> Coord {
