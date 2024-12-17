@@ -25,6 +25,10 @@ impl<T: std::clone::Clone + std::cmp::PartialEq + std::marker::Copy> Matrix<T> {
         };
     }
 
+    pub fn reset(&mut self, val: T) {
+        self.data = vec![val].repeat((self.width * self.height) as usize)
+    }
+
     pub fn at_coord(&self, c: Coord) -> Option<&T> {
         let pos = c.y * self.width + c.x;
         return self.data.get(pos as usize);
@@ -61,9 +65,15 @@ impl<T: std::clone::Clone + std::cmp::PartialEq + std::marker::Copy> Matrix<T> {
     }
 }
 
-impl<T> fmt::Display for Matrix<T> {
+impl<T: std::fmt::Display> fmt::Display for Matrix<T> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "size: {}x{}", self.width, self.height)
+        for (i, v) in self.data.iter().enumerate() {
+            if i as i32 % self.width == 0 {
+                writeln!(f)?
+            }
+            write!(f, "{}", v)?
+        }
+        Ok(())
     }
 }
 
