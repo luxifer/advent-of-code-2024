@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub struct Vector {
     pub x: i32,
     pub y: i32,
@@ -29,6 +29,13 @@ impl Vector {
         return Vector {
             x: -self.y,
             y: self.x,
+        };
+    }
+
+    pub fn rotate_90_aw(&self) -> Vector {
+        return Vector {
+            x: self.y,
+            y: -self.x,
         };
     }
 
