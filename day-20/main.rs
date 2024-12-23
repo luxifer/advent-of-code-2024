@@ -35,30 +35,14 @@ fn main() -> Result<()> {
 
         println!("reference: {}", reference_time);
 
-        let mut cheat_candidates: HashSet<coord::Coord> = HashSet::new();
-
-        for p in path.iter() {
-            for v in vec![UP, RIGHT, DOWN, LEFT].iter() {
-                let c = p.add(*v);
-
-                if path.contains(&c) {
-                    continue;
-                }
-
-                let tile = racetrack.at_coord(c).unwrap();
-
-                if *tile == '#' {
-                    cheat_candidates.insert(c);
-                }
-            }
-        }
+        let cheat_candidates = find_candidates(&racetrack, &path);
 
         println!("candidates: {}", cheat_candidates.len());
 
         let mut total = 0;
 
         for cheat_start_pos in cheat_candidates.iter() {
-            let res = find_path(&racetrack, start, goal, *cheat_start_pos, 2);
+            let res = find_path(&racetrack, start, goal, &path, *cheat_start_pos, 2);
 
             match res {
                 Some((_, picoseconds)) => {
@@ -82,30 +66,14 @@ fn main() -> Result<()> {
 
         println!("reference: {}", reference_time);
 
-        let mut cheat_candidates: HashSet<coord::Coord> = HashSet::new();
-
-        for p in path.iter() {
-            for v in vec![UP, RIGHT, DOWN, LEFT].iter() {
-                let c = p.add(*v);
-
-                if path.contains(&c) {
-                    continue;
-                }
-
-                let tile = racetrack.at_coord(c).unwrap();
-
-                if *tile == '#' {
-                    cheat_candidates.insert(c);
-                }
-            }
-        }
+        let cheat_candidates = find_candidates(&racetrack, &path);
 
         println!("candidates: {}", cheat_candidates.len());
 
         let mut total = 0;
 
         for cheat_start_pos in cheat_candidates.iter() {
-            let res = find_path(&racetrack, start, goal, *cheat_start_pos, 20);
+            let res = find_path(&racetrack, start, goal, &path, *cheat_start_pos, 20);
 
             match res {
                 Some((_, picoseconds)) => {
@@ -124,10 +92,33 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn find_candidates(m: &matrix::Matrix<char>, path: &Vec<coord::Coord>) -> HashSet<coord::Coord> {
+    let mut cheat_candidates: HashSet<coord::Coord> = HashSet::new();
+
+    for p in path.iter() {
+        for v in vec![UP, RIGHT, DOWN, LEFT].iter() {
+            let c = p.add(*v);
+
+            if path.contains(&c) {
+                continue;
+            }
+
+            let tile = m.at_coord(c).unwrap();
+
+            if *tile == '#' {
+                cheat_candidates.insert(c);
+            }
+        }
+    }
+
+    return cheat_candidates;
+}
+
 #[derive(Eq, PartialEq, Hash, Clone)]
 struct Pos {
     node: coord::Coord,
     remaining: i32,
+    cheat_enabled: bool,
 }
 
 fn find_reference(
@@ -165,51 +156,81 @@ fn find_reference(
 
 fn cheated_successors(
     m: &matrix::Matrix<char>,
+    reference_path: &Vec<coord::Coord>,
     n: &Pos,
     cheat_pos: coord::Coord,
     remaining: i32,
 ) -> Vec<(Pos, i32)> {
-    vec![UP, RIGHT, DOWN, LEFT]
-        .into_iter()
-        .map(|v| n.node.add(v))
-        .filter(|c| {
-            if !m.in_coord(*c) {
-                return false;
-            }
+    let mut res: Vec<(Pos, i32)> = Vec::new();
 
-            if *c == cheat_pos {
-                return true;
-            }
+    for v in vec![UP, RIGHT, DOWN, LEFT] {
+        let next_pos = n.node.add(v);
 
-            if n.remaining > 0 {
-                return true;
-            }
+        // skip out of bounds
+        if !m.in_coord(next_pos) {
+            continue;
+        }
 
-            let tile = m.at_coord(*c);
-            match tile {
-                Some(v) => return *v != '#',
-                None => return false,
-            }
-        })
-        .map(|c| {
-            if c == cheat_pos {
-                return (Pos { node: c, remaining }, 1);
-            }
-            (
+        // activate cheat
+        if next_pos == cheat_pos {
+            res.push((
                 Pos {
-                    node: c,
-                    remaining: n.remaining - 1,
+                    node: next_pos,
+                    remaining: remaining - 1,
+                    cheat_enabled: true,
                 },
                 1,
-            )
-        })
-        .collect()
+            ));
+            continue;
+        }
+
+        // cheat activated
+        if n.cheat_enabled == true && n.remaining > 0 {
+            // deactivate cheat
+            if reference_path.contains(&next_pos) {
+                res.push((
+                    Pos {
+                        node: next_pos,
+                        remaining: 0,
+                        cheat_enabled: false,
+                    },
+                    1,
+                ));
+            } else {
+                res.push((
+                    Pos {
+                        node: next_pos,
+                        remaining: n.remaining - 1,
+                        cheat_enabled: true,
+                    },
+                    1,
+                ));
+            }
+            continue;
+        }
+
+        // normal detection
+        let tile = m.at_coord(next_pos).unwrap();
+        if *tile != '#' {
+            res.push((
+                Pos {
+                    node: next_pos,
+                    remaining: 0,
+                    cheat_enabled: false,
+                },
+                1,
+            ));
+        }
+    }
+
+    return res;
 }
 
 fn find_path(
     m: &matrix::Matrix<char>,
     start: coord::Coord,
     goal: coord::Coord,
+    reference_path: &Vec<coord::Coord>,
     cheat_pos: coord::Coord,
     cheat_dur: i32,
 ) -> Option<(Vec<Pos>, i32)> {
@@ -217,8 +238,9 @@ fn find_path(
         &Pos {
             node: start,
             remaining: 0,
+            cheat_enabled: false,
         },
-        |n| cheated_successors(m, n, cheat_pos, cheat_dur),
+        |n| cheated_successors(m, reference_path, n, cheat_pos, cheat_dur),
         |n| {
             let dist = n.node.distance(goal);
             return dist.x.abs() + dist.y.abs();
