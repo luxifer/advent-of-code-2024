@@ -1,11 +1,10 @@
-use std::collections::HashSet;
-
 use advent_of_code::cli;
 use advent_of_code::matrix::coord;
 use advent_of_code::matrix::matrix;
 use advent_of_code::matrix::vector;
 use anyhow::Result;
 use pathfinding::prelude::astar;
+use std::collections::HashSet;
 
 fn main() -> Result<()> {
     let app = cli::Cli::new();
