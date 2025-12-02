@@ -10,3 +10,7 @@ clap = { version = "4.5.53", features = ["derive"] }
 [[bin]]
 name = "day-01"
 path = "day-01/main.rs"
+
+[[bin]]
+name = "day-02"
+path = "day-02/main.rs"
