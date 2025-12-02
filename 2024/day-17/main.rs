@@ -1,5 +1,5 @@
-use advent_of_code::cli;
 use anyhow::Result;
+use common::cli;
 use itertools::Itertools;
 use regex::Regex;
 use std::fmt;

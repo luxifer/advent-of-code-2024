@@ -1,5 +1,5 @@
-use advent_of_code::cli;
 use anyhow::Result;
+use common::cli;
 
 fn main() -> Result<()> {
     let app = cli::Cli::new();

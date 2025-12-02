@@ -38,7 +38,7 @@ impl<T: std::clone::Clone + std::cmp::PartialEq + std::marker::Copy> Matrix<T> {
         return c.x >= 0 && c.x < self.width && c.y >= 0 && c.y < self.height;
     }
 
-    pub fn iter(&self) -> MatrixIterator<T> {
+    pub fn iter(&'_ self) -> MatrixIterator<'_, T> {
         return MatrixIterator {
             matrix: self,
             pos_iter: 0,

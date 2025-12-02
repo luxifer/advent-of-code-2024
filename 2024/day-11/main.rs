@@ -1,5 +1,5 @@
-use advent_of_code::cli;
 use anyhow::Result;
+use common::cli;
 use std::collections::HashMap;
 
 fn main() -> Result<()> {

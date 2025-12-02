@@ -1,7 +1,7 @@
-use advent_of_code::cli;
-use advent_of_code::matrix::coord;
-use advent_of_code::matrix::matrix;
 use anyhow::Result;
+use common::cli;
+use common::matrix::coord;
+use common::matrix::matrix;
 use std::collections::HashMap;
 
 fn main() -> Result<()> {

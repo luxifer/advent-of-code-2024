@@ -1,8 +1,8 @@
-use advent_of_code::cli;
-use advent_of_code::matrix::coord;
-use advent_of_code::matrix::matrix;
-use advent_of_code::matrix::vector;
+use common::matrix::coord;
+use common::matrix::matrix;
+use common::matrix::vector;
 use anyhow::Result;
+use common::cli;
 use pathfinding::prelude::astar;
 
 fn main() -> Result<()> {

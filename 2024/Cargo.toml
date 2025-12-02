@@ -1,91 +1,87 @@
 [package]
-name = "advent-of-code"
+name = "advent-of-code-2024"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [[bin]]
-name = "day-01"
+name = "2024-day-01"
 path = "day-01/main.rs"
 
 [[bin]]
-name = "day-02"
+name = "2024-day-02"
 path = "day-02/main.rs"
 
 [[bin]]
-name = "day-03"
+name = "2024-day-03"
 path = "day-03/main.rs"
 
 [[bin]]
-name = "day-04"
+name = "2024-day-04"
 path = "day-04/main.rs"
 
 [[bin]]
-name = "day-05"
+name = "2024-day-05"
 path = "day-05/main.rs"
 
 [[bin]]
-name = "day-06"
+name = "2024-day-06"
 path = "day-06/main.rs"
 
 [[bin]]
-name = "day-07"
+name = "2024-day-07"
 path = "day-07/main.rs"
 
 [[bin]]
-name = "day-08"
+name = "2024-day-08"
 path = "day-08/main.rs"
 
 [[bin]]
-name = "day-09"
+name = "2024-day-09"
 path = "day-09/main.rs"
 
 [[bin]]
-name = "day-10"
+name = "2024-day-10"
 path = "day-10/main.rs"
 
 [[bin]]
-name = "day-11"
+name = "2024-day-11"
 path = "day-11/main.rs"
 
 [[bin]]
-name = "day-12"
+name = "2024-day-12"
 path = "day-12/main.rs"
 
 [[bin]]
-name = "day-13"
+name = "2024-day-13"
 path = "day-13/main.rs"
 
 [[bin]]
-name = "day-14"
+name = "2024-day-14"
 path = "day-14/main.rs"
 
 [[bin]]
-name = "day-15"
+name = "2024-day-15"
 path = "day-15/main.rs"
 
 [[bin]]
-name = "day-16"
+name = "2024-day-16"
 path = "day-16/main.rs"
 
 [[bin]]
-name = "day-17"
+name = "2024-day-17"
 path = "day-17/main.rs"
 
 [[bin]]
-name = "day-18"
+name = "2024-day-18"
 path = "day-18/main.rs"
 
 [[bin]]
-name = "day-19"
+name = "2024-day-19"
 path = "day-19/main.rs"
 
 [[bin]]
-name = "day-20"
+name = "2024-day-20"
 path = "day-20/main.rs"
-
-[[bin]]
-name = "day-21"
-path = "day-21/main.rs"
 
 [dependencies]
 anyhow = "1.0.94"
@@ -93,3 +89,4 @@ clap = { version = "4.5.23", features = ["derive"] }
 itertools = "0.13.0"
 pathfinding = "4.12.0"
 regex = "1.11.1"
+common = { path = "../common" }

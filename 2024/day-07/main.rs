@@ -1,6 +1,6 @@
-use advent_of_code::cli;
 use anyhow::Result;
-use itertools::{repeat_n, Itertools};
+use common::cli;
+use itertools::{Itertools, repeat_n};
 use std::fmt;
 use std::fmt::Write;
 

@@ -1,16 +1,17 @@
 [package]
-name = "advent-of-code"
+name = "advent-of-code-2025"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0.100"
 clap = { version = "4.5.53", features = ["derive"] }
+common = { path = "../common" }
 
 [[bin]]
-name = "day-01"
+name = "2025-day-01"
 path = "day-01/main.rs"
 
 [[bin]]
-name = "day-02"
+name = "2025-day-02"
 path = "day-02/main.rs"
