@@ -7,7 +7,6 @@ edition = "2024"
 anyhow.workspace = true
 clap.workspace = true
 common = { path = "../common" }
-ndarray = "0.17.1"
 
 [[bin]]
 name = "2025-day-01"
